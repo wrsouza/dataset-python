@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: settings
+      PYTHONPATH: /app/src
+      FLAGS_JSON_PATH: /app/src/flags.json
+    command: >
+      python src/manage.py runserver 0.0.0.0:8000

@@ -1,0 +1,75 @@
+version: "3.9"
+
+services:
+
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: dev          # use "prod" for production
+    volumes:
+      - .:/app             # remove in prod for immutable image
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      # sqlserver:
+      #   condition: service_started
+    command: >
+      sh -c "python src/manage.py migrate --no-input &&
+             python src/manage.py runserver 0.0.0.0:8000"
+
+  # ── POSTGRESQL (default Django database + PostgreSQLFactory family) ────────
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── MYSQL (MySQLFactory family) ──────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-appdb}
+      MYSQL_USER: ${MYSQL_USER:-app}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-secret}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── SQL SERVER (SQLServerFactory family — opcional) ─────────────────────────
+  # sqlserver:
+  #   image: mcr.microsoft.com/mssql/server:2022-latest
+  #   environment:
+  #     SA_PASSWORD: ${SQLSERVER_PASSWORD:-YourStrong@Passw0rd}
+  #     ACCEPT_EULA: "Y"
+  #   ports:
+  #     - "1433:1433"
+  #   volumes:
+  #     - sqlserver_data:/var/opt/mssql
+
+volumes:
+  postgres_data:
+  mysql_data:
+  # sqlserver_data:

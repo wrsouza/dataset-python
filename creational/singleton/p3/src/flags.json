@@ -1,0 +1,27 @@
+{
+  "dark_mode": {
+    "enabled": true,
+    "rollout_percentage": 0,
+    "allowlist": []
+  },
+  "new_checkout": {
+    "enabled": true,
+    "rollout_percentage": 50,
+    "allowlist": []
+  },
+  "beta_search": {
+    "enabled": true,
+    "rollout_percentage": 0,
+    "allowlist": ["user_1", "user_42", "admin"]
+  },
+  "experimental_dashboard": {
+    "enabled": true,
+    "rollout_percentage": 0,
+    "allowlist": []
+  },
+  "legacy_payment": {
+    "enabled": false,
+    "rollout_percentage": 0,
+    "allowlist": []
+  }
+}

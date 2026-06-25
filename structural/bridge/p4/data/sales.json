@@ -1,0 +1,7 @@
+{
+  "columns": ["product", "units", "revenue"],
+  "rows": [
+    {"product": "Widget", "units": 10, "revenue": 199.9},
+    {"product": "Gadget", "units": 5, "revenue": 249.5}
+  ]
+}

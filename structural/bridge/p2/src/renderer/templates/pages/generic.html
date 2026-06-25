@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>{{ title }}</title></head>
+<body>
+  <h1>{{ title }}</h1>
+  <dl>
+    {% for key, value in data.items() %}
+    <dt>{{ key }}</dt><dd>{{ value }}</dd>
+    {% endfor %}
+  </dl>
+</body>
+</html>

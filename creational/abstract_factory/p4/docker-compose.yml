@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: dev          # use "prod" for production
+    volumes:
+      - .:/app             # remove in prod for immutable image
+    env_file: .env
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/chart_factory/app.py
+      --server.port=8501
+      --server.address=0.0.0.0
+      --server.headless=true
+      --browser.gatherUsageStats=false

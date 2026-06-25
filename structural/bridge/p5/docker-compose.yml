@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    depends_on:
+      - sqlserver
+      - mongo
+    ports:
+      - "8501:8501"
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+    ports:
+      - "1433:1433"
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"

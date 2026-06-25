@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem serviços externos: tudo persiste em SQLite local (PLAN.md não
+  # especifica um banco para este projeto).
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8000:8000"
+    environment:
+      PYTHONPATH: /app/src
+      DJANGO_SETTINGS_MODULE: config.settings
+    command: >
+      sh -c "python src/manage.py migrate &&
+             python src/manage.py runserver 0.0.0.0:8000"

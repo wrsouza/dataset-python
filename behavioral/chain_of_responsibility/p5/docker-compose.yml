@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem serviços externos: a cadeia de validação vive em memória, dentro do
+  # processo da aplicação Streamlit.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/data_validation/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0

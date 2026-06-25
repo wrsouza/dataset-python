@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+      - local_files:/tmp/app-files
+    env_file: .env
+    ports:
+      - "5000:5000"
+    depends_on:
+      localstack:
+        condition: service_healthy
+    command: flask --app storage.main run --host 0.0.0.0 --port 5000 --debug
+    environment:
+      PYTHONPATH: /app/src
+
+  localstack:
+    image: localstack/localstack:3.4
+    environment:
+      SERVICES: s3
+      AWS_DEFAULT_REGION: us-east-1
+      LOCALSTACK_HOST: localstack
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:4566/_localstack/health | grep -q '\"s3\": \"available\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  localstack_data:
+  local_files:

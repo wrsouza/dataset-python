@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO (CLI) ───────────────────────────────────────────────────────────
+  # Sem serviços externos: compressão/descompressão usam apenas a stdlib
+  # (gzip, zlib, bz2) sobre arquivos locais, montados como volume.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    # Padrão: roda os testes. Para usar a CLI:
+    # docker-compose run --rm app python -m compression_strategy_cli.main compress file.txt --strategy gzip
+    command: python -m pytest

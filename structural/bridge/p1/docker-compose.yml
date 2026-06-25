@@ -1,0 +1,41 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8001:8000"
+    depends_on:
+      localstack:
+        condition: service_healthy
+    command: >
+      uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    environment:
+      - PYTHONPATH=/app/src
+
+  localstack:
+    image: localstack/localstack:3.4
+    environment:
+      SERVICES: ses,sns
+      AWS_DEFAULT_REGION: us-east-1
+      LOCALSTACK_HOST: localstack
+      DEBUG: 0
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./scripts/localstack-init.sh:/etc/localstack/init/ready.d/init.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  localstack_data:

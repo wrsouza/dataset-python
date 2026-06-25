@@ -1,0 +1,24 @@
+type: group
+name: build_all
+stop_on_failure: true
+tasks:
+  - type: simulated
+    name: compile
+    duration_seconds: 0.2
+    should_succeed: true
+  - type: group
+    name: test_all
+    stop_on_failure: false
+    tasks:
+      - type: simulated
+        name: unit_tests
+        duration_seconds: 0.3
+        should_succeed: true
+      - type: simulated
+        name: integration_tests
+        duration_seconds: 0.4
+        should_succeed: true
+  - type: simulated
+    name: package
+    duration_seconds: 0.1
+    should_succeed: true

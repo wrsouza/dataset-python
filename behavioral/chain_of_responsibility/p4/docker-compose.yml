@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      PYTHONPATH: /app/src
+    # Default: run tests. Override to run the CLI:
+    # docker-compose run --rm app python -m message_pipeline.main process --queue orders
+    command: python -m pytest
+
+  rabbitmq:
+    image: rabbitmq:3.13-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+volumes:
+  rabbitmq_data:

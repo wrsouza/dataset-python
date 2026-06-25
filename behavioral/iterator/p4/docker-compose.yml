@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO (CLI) ───────────────────────────────────────────────────────────
+  # Sem serviços externos: percorre o filesystem montado como volume.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    # Padrão: roda os testes. Para usar a CLI:
+    # docker-compose run --rm app python -m file_tree_iterator.main tree /app
+    command: python -m pytest

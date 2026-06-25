@@ -1,0 +1,11 @@
+"""Django AppConfig for the catalog app."""
+
+from __future__ import annotations
+
+from django.apps import AppConfig
+
+
+class CatalogConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "catalog"
+    label = "catalog"

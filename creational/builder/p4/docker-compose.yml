@@ -1,0 +1,23 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: prod
+    ports:
+      - "8501:8501"
+    env_file: .env
+    volumes:
+      - .:/app
+    environment:
+      - STREAMLIT_SERVER_HEADLESS=true
+      - STREAMLIT_SERVER_PORT=8501
+
+  test:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    command: python -m pytest --cov=src --cov-report=term-missing -v

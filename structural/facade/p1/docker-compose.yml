@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: dev          # trocar por "prod" para produção
+    volumes:
+      - .:/app             # remover em prod
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    command: >
+      uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ── POSTGRESQL ────────────────────────────────────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secret}
+      POSTGRES_DB: ${POSTGRES_DB:-appdb}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── LOCALSTACK (emulação de AWS SQS) ─────────────────────────────────────────
+  # Os testes unitários/integração usam moto (mock em memória) e não dependem
+  # deste serviço. Útil apenas para rodar a app manualmente contra uma fila SQS
+  # local sem credenciais reais da AWS.
+  localstack:
+    image: localstack/localstack:3.4
+    environment:
+      SERVICES: sqs
+      AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+      - ./scripts/init-localstack.sh:/etc/localstack/init/ready.d/init-localstack.sh
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  localstack_data:

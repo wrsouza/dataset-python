@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem emulador local do GCP Pub/Sub configurado: em desenvolvimento, o
+  # publisher real do Google Cloud é usado apenas se GOOGLE_CLOUD_PROJECT
+  # estiver definido; caso contrário, a publicação remota é ignorada e só os
+  # observadores locais (que atualizam o dashboard) são notificados.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/live_dashboard_observer/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0

@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8501:8501"
+    depends_on:
+      - mongo
+    command: >
+      streamlit run src/analysis_session_memento/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0
+
+  mongo:
+    image: mongo:7
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

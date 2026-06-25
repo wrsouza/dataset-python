@@ -1,0 +1,79 @@
+{
+  "type": "tab_group",
+  "name": "main_dashboard",
+  "children": [
+    {
+      "type": "column",
+      "name": "overview_tab",
+      "children": [
+        {
+          "type": "row",
+          "name": "kpi_row",
+          "children": [
+            {
+              "type": "metric_card",
+              "name": "revenue_card",
+              "props": {"label": "Receita", "value": "R$ 128.400", "delta": "+12%"}
+            },
+            {
+              "type": "metric_card",
+              "name": "orders_card",
+              "props": {"label": "Pedidos", "value": "1.204", "delta": "+5%"}
+            },
+            {
+              "type": "metric_card",
+              "name": "churn_card",
+              "props": {"label": "Churn", "value": "2.1%", "delta": "-0.3%"}
+            }
+          ]
+        },
+        {
+          "type": "chart",
+          "name": "revenue_chart",
+          "props": {
+            "chart_type": "line",
+            "series": {"receita": [10, 12, 9, 15, 18]},
+            "x_labels": ["Jan", "Fev", "Mar", "Abr", "Mai"]
+          }
+        },
+        {
+          "type": "text_block",
+          "name": "overview_note",
+          "props": {"content": "Resumo mensal de vendas.", "markdown": true}
+        }
+      ]
+    },
+    {
+      "type": "row",
+      "name": "details_tab",
+      "children": [
+        {
+          "type": "column",
+          "name": "left_column",
+          "children": [
+            {
+              "type": "chart",
+              "name": "orders_chart",
+              "props": {
+                "chart_type": "bar",
+                "series": {"pedidos": [120, 98, 140, 110]},
+                "x_labels": ["Sem1", "Sem2", "Sem3", "Sem4"]
+              }
+            }
+          ]
+        },
+        {
+          "type": "column",
+          "name": "right_column",
+          "children": [
+            {
+              "type": "metric_card",
+              "name": "avg_ticket_card",
+              "props": {"label": "Ticket Médio", "value": "R$ 106,60"}
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

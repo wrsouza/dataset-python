@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    depends_on:
+      localstack:
+        condition: service_healthy
+    # Padrão: roda os testes. Para usar a CLI:
+    # docker-compose run --rm app python -m cloud_event_notifier.main order.created '{"order_id": "o1"}'
+    command: python -m pytest
+
+  localstack:
+    image: localstack/localstack:3.4
+    environment:
+      SERVICES: sns
+      AWS_DEFAULT_REGION: us-east-1
+      LOCALSTACK_HOST: localstack
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack_data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:4566/_localstack/health | grep -q '\"sns\": \"running\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+volumes:
+  localstack_data:

@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem serviços externos: o assistente de formulário vive em memória, dentro
+  # do processo da aplicação Streamlit, em st.session_state.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/form_wizard_fsm/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0

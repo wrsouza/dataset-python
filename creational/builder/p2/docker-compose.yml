@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "5000:5000"
+    command: >
+      flask --app report_builder.main run --host 0.0.0.0 --port 5000 --debug

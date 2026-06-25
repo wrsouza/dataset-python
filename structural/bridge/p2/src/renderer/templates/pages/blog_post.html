@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8"><title>{{ title }}</title></head>
+<body>
+  <article>
+    <h1>{{ data.title }}</h1>
+    <p><em>By {{ data.author }} on {{ data.published_at }}</em></p>
+    <p>{{ data.content }}</p>
+    <p><strong>Tags:</strong> {{ data.tags|join(", ") }}</p>
+  </article>
+</body>
+</html>

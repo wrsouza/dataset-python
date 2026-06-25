@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package rate_limiting;
+
+// Subject: the gRPC service interface implemented by BOTH the RealSubject
+// (RealDataServiceServicer) and the Proxy (RateLimitingProxyServicer).
+// Clients only ever see this interface — they connect to whatever address
+// the proxy is listening on and have no idea a Proxy intercepts every call.
+service DataService {
+  // GetData returns business data for a given key.
+  // RESOURCE_EXHAUSTED (grpc code 8) is returned by the Proxy when the
+  // caller has exceeded its configured rate limit.
+  rpc GetData(DataRequest) returns (DataResponse);
+}
+
+message DataRequest {
+  string client_id = 1;
+  string key = 2;
+}
+
+message DataResponse {
+  string key = 1;
+  string value = 2;
+  int64 served_at_unix_ms = 3;
+}

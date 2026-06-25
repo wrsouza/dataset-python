@@ -1,0 +1,57 @@
+version: "3.9"
+
+services:
+
+  # ── APLICACAO ────────────────────────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      target: dev          # use "prod" for production
+    volumes:
+      - .:/app             # remove in prod for immutable image
+    env_file: .env
+    ports:
+      - "8000:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    command: >
+      sh -c "python src/manage.py migrate --no-input &&
+             python src/manage.py runserver 0.0.0.0:8000"
+
+  # ── REDIS (CeleryRedisBroker) ─────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── RABBITMQ (RabbitMQBroker) ─────────────────────────────────────────────────
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD:-guest}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ── LOCALSTACK (SQSBroker — opcional, descomentar para testar SQS real) ─────
+  # localstack:
+  #   image: localstack/localstack:3
+  #   environment:
+  #     SERVICES: sqs
+  #     DEFAULT_REGION: us-east-1
+  #   ports:
+  #     - "4566:4566"

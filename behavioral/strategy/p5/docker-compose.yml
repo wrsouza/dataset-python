@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem serviços externos: os modelos são funções puras em Python, sem
+  # nenhuma dependência de ML real — o foco é o pattern Strategy.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/ml_model_strategy/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0

@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    env_file: .env
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_SETTINGS_MODULE: settings
+      PYTHONPATH: /app/src
+      POSTGRES_HOST: postgres
+    depends_on:
+      - postgres
+    command: >
+      python src/manage.py runserver 0.0.0.0:8000
+
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: permission_layers
+      POSTGRES_USER: permission_layers
+      POSTGRES_PASSWORD: permission_layers
+    ports:
+      - "5432:5432"
+    volumes:
+      - permission_layers_pgdata:/var/lib/postgresql/data
+
+volumes:
+  permission_layers_pgdata:

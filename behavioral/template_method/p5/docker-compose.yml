@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  # ── APLICAÇÃO ───────────────────────────────────────────────────────────────
+  # Sem serviços externos: cada workflow de análise é uma função pura em
+  # memória, dentro do processo da aplicação Streamlit.
+  app:
+    build:
+      context: .
+      target: dev
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501"
+    command: >
+      streamlit run src/analysis_workflow_template/infrastructure/app.py --server.port=8501 --server.address=0.0.0.0
