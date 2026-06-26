@@ -47,17 +47,25 @@ dataset-python/
 │   ├── facade/
 │   ├── flyweight/
 │   └── proxy/
-└── behavioral/                  # 10 patterns × 5 projetos = 50 projetos
-    ├── chain_of_responsibility/
-    ├── command/
-    ├── iterator/
-    ├── mediator/
-    ├── memento/
-    ├── observer/
-    ├── state/
-    ├── strategy/
-    ├── template_method/
-    └── visitor/
+├── behavioral/                  # 10 patterns × 5 projetos = 50 projetos
+│   ├── chain_of_responsibility/
+│   ├── command/
+│   ├── iterator/
+│   ├── mediator/
+│   ├── memento/
+│   ├── observer/
+│   ├── state/
+│   ├── strategy/
+│   ├── template_method/
+│   └── visitor/
+└── extras/                      # 200 scripts independentes (1 arquivo cada)
+    ├── PLAN_EXTRAS.md            # plano e convenções dos scripts extras
+    ├── STATUS_EXTRAS.md          # rastreamento de progresso
+    ├── data_processing/          # 50 — pandas, numpy, files (csv/json/excel)
+    ├── utilities/                # 50 — strings/regex, file_io, datetime, validation, encoding
+    ├── algorithms/                # 40 — sorting, searching, graphs, DP, trees
+    ├── exception_handling/        # 30 — custom_exceptions, try_except, logging, error_recovery
+    └── practical/                  # 30 — real_world_snippets, problem_solving, edge_cases, performance
 ```
 
 Cada `pattern/pN/` é um projeto **completo e independente**: tem seu
@@ -142,6 +150,28 @@ src/<pacote>/
 Ver `docs/standards/clean_code.md` e `docs/standards/solid_principles.md`
 para o guia completo seguido em todo o dataset, e `docs/decisions/ADR-001-tech-stack.md`
 para o racional das escolhas de stack.
+
+## Scripts extras (`extras/`)
+
+Além dos 110 projetos de design patterns, o repositório inclui **200
+scripts Python independentes** (1 arquivo cada, sem Docker/tests/SOLID —
+diferente dos projetos de pattern), organizados por categoria:
+
+| Categoria | Subpastas | Scripts |
+|---|---|---|
+| Data Processing | `pandas/`, `numpy/`, `files_csv_json_excel/` | 50 |
+| Utilities & Helpers | `strings_regex/`, `file_io/`, `datetime/`, `validation/`, `encoding_decoding/` | 50 |
+| Algoritmos | `sorting/`, `searching/`, `graphs/`, `dynamic_programming/`, `trees/` | 40 |
+| Exception Handling | `custom_exceptions/`, `try_except_patterns/`, `logging_patterns/`, `error_recovery/` | 30 |
+| Practical Code | `real_world_snippets/`, `problem_solving/`, `edge_cases/`, `performance/` | 30 |
+
+Cada script segue o padrão `extras/<categoria>/<subtema>/NN_nome_descritivo.py`:
+docstring com cenário e objetivo, comentários nos pontos não-óbvios, e
+um bloco `if __name__ == "__main__":` executável com dados de exemplo.
+Sem chamadas de rede reais e sem dependências fora de
+`pandas`/`numpy`/`openpyxl` + stdlib. Ver `extras/PLAN_EXTRAS.md` para
+as convenções completas e `extras/STATUS_EXTRAS.md` para o
+rastreamento de progresso (200/200 concluído).
 
 ## Licença
 

@@ -62,9 +62,9 @@ class CircuitBreaker:
 
 
 def servico_externo(estado={"chamadas": 0}):
-    """Simula um serviço que falha sempre, até a chamada de número 6."""
+    """Simula um serviço que falha sempre, até a chamada de número 5."""
     estado["chamadas"] += 1
-    if estado["chamadas"] < 6:
+    if estado["chamadas"] < 5:
         raise ConnectionError(f"serviço fora do ar (chamada {estado['chamadas']})")
     return "resposta ok"
 
@@ -88,7 +88,7 @@ if __name__ == "__main__":
     # Espera o tempo de recuperação passar para permitir o teste HALF_OPEN.
     time.sleep(0.35)
 
-    # Nessa fase o serviço ainda falha (chamadas 4 e 5), então o teste em
+    # Nessa fase o serviço ainda falha (chamada 4), então o teste em
     # HALF_OPEN falha e o circuito reabre imediatamente.
     try:
         breaker.chamar(servico_externo)
@@ -96,6 +96,6 @@ if __name__ == "__main__":
         print(f"teste half-open falhou, reabrindo: {exc}; estado={breaker.estado.value}")
 
     time.sleep(0.35)
-    # Na chamada 6 o serviço finalmente responde, fechando o circuito.
+    # Na chamada 5 o serviço finalmente responde, fechando o circuito.
     resultado = breaker.chamar(servico_externo)
     print(f"circuito recuperado, resultado={resultado}; estado={breaker.estado.value}")
